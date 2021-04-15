@@ -44,4 +44,9 @@ class MainActivity : AppCompatActivity() {
             startActivity(Intent(this, ViewModelActivity::class.java))
         }
     }
+
+    public fun getTest(str: String): String {
+        return str + str
+
+    }
 }

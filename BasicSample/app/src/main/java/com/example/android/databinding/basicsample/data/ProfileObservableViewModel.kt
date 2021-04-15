@@ -24,6 +24,8 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
 import com.example.android.databinding.basicsample.BR
+import com.example.android.databinding.basicsample.repo.Repository
+import com.example.android.databinding.basicsample.ui.MainActivity
 import com.example.android.databinding.basicsample.util.ObservableViewModel
 
 
@@ -34,13 +36,31 @@ import com.example.android.databinding.basicsample.util.ObservableViewModel
 class ProfileLiveDataViewModel : ViewModel() {
     private val _name = MutableLiveData("Ada")
     private val _lastName = MutableLiveData("Lovelace")
-    private val _likes =  MutableLiveData(0)
+    private val _likes = MutableLiveData(0)
 
     val name: LiveData<String> = _name
     val lastName: LiveData<String> = _lastName
     val likes: LiveData<Int> = _likes
 
     // popularity is exposed as LiveData using a Transformation instead of a @Bindable property.
+    /**
+     * Transformations.map 类型转换 这里不关心的 你的like等级到底是多少
+     * 而是关心你的等级  这里见 like数目转化为 三个等级
+     */
+
+    private val _user = MutableLiveData<String>("wuhandaxue")
+    val user = Transformations.switchMap(_user) { user ->
+        Repository.getUser(user)
+    }
+
+    /** 当出现 LiveData对象不ViewModel中声明的情况 如何监听到外部变化
+     * 使用本地的参数 变化 带动参数的查询 间接使用user 返回结果 此处的user是可观察对象
+     * 应该被添加到 databinding中 */
+    fun getUser(name: String) {
+        _user.value = name
+
+    }
+
     val popularity: LiveData<Popularity> = Transformations.map(_likes) {
         when {
             it > 9 -> Popularity.STAR
@@ -48,6 +68,7 @@ class ProfileLiveDataViewModel : ViewModel() {
             else -> Popularity.NORMAL
         }
     }
+
 
     fun onLike() {
         _likes.value = (_likes.value ?: 0) + 1
@@ -63,7 +84,7 @@ class ProfileLiveDataViewModel : ViewModel() {
 class ProfileObservableViewModel : ObservableViewModel() {
     val name = ObservableField("Ada")
     val lastName = ObservableField("Lovelace")
-    val likes =  ObservableInt(0)
+    val likes = ObservableInt(0)
 
     fun onLike() {
         likes.increment()

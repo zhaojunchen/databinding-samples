@@ -50,5 +50,13 @@ class ViewModelActivity : AppCompatActivity() {
 
         // LiveData needs the lifecycle owner
         binding.lifecycleOwner = this
+
+
+
+        binding.button.setOnClickListener {
+            viewModel.getUser(binding.updateName.text.toString())
+        }
+
+
     }
 }

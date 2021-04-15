@@ -32,12 +32,15 @@ import com.example.android.databinding.basicsample.databinding.ObservableFieldPr
 class ObservableFieldActivity : AppCompatActivity() {
 
     private val observableFieldProfile = ObservableFieldProfile("Ada", "Lovelace", ObservableInt(0))
-
+    
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
+        /**
+         * 绑定视图
+         */
         val binding: ObservableFieldProfileBinding =
                 DataBindingUtil.setContentView(this, R.layout.observable_field_profile)
+        /**  添加数据源 */
         binding.user = observableFieldProfile
     }
 

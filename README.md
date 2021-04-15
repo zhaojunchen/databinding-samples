@@ -1,3 +1,49 @@
+[TOC]
+
+
+
+# ViewModel && Databinding
+
+https://github.com/zhaojunchen/databinding-samples
+
+1. 如何添加databinding
+
+2. 编写ViewModel
+
+3. 绑定databinding和ViewModel
+
+4. 数据设置
+
+   ```
+   val popularity: LiveData<Popularity> = Transformations.map(_likes) {
+           when {
+               it > 9 -> Popularity.STAR
+               it > 4 -> Popularity.POPULAR
+               else -> Popularity.NORMAL
+           }
+       }
+       
+   val user = Transformations.switchMap(_user) { user ->
+           Repository.getUser(user)
+       }
+   ```
+
+   上述的2中方式，第一中使用场景如下：
+
+   1. 涉及的LiveData变量的数据源来自本身、即是ViewModel中的定义，如likes、name、lastname等
+   2. 设计的内容不适合展示、或者需要更好的形式展示，例子1. User存储人的身份证号，但是展示的时候只需要展示名字，此时就不需要展示身份证，对传输的User（`Livedata<User>`） 使用map转化为 名字(`LiveData<String>`)  ， 例子2:  现实的内容为数字需要切换为等级信息，本处就是这样
+
+   第二种场景，数据的来源来来自网络，比如，查询的来自外部（数据库、网络）等，直接返回LiveData会导致每次返回的数据对象发生变化，无法实现监听! 解决方法
+
+   1. 假设使用getUser(name:String) 请求参数，首选参数设置为一个私有的变量，然后用switchMap返回可观察对象！  
+
+   2. 实际发现, 这个可观察的对象并未发生的对象应用并未发生变化！！！
+
+      ![image-20210415183311861](4-15ViewModel+Databinding.assets/image-20210415183311861.png)
+
+      ![image-20210415183416355](4-15ViewModel+Databinding.assets/image-20210415183416355.png)
+
+
 Android Data Binding Library samples
 ===================================
 
